@@ -26,9 +26,12 @@ const CategorySchema = mongoose.Schema({
     required: [true, "Merci de renseigner la devise de la catégorie"],
     enum: ["$", "€", "¥", "£"],
   },
-  attendees: [{ type: mongoose.Schema.ObjectId, ref: "Attendee" }],
+  payor: {
+    type: String
+  },
+  attendees: [],
   user: {
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Types.ObjectId,  
     ref: "User",
     required: true,
   },

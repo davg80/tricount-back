@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 
 const register = async (req, res) => {
-  const { lastname, firstname, email, password } = req.body;
+  const { lastname, firstname, gender, email, password } = req.body;
   const emailAlreadyExists = await User.find({ email });
   if (emailAlreadyExists.length > 0) {
     throw new CustomError.BadRequestError("Ce compte existe déjà.");
@@ -16,6 +16,7 @@ const register = async (req, res) => {
   const user = await User.create({
     lastname,
     firstname,
+    gender,
     email,
     password,
     role,

@@ -29,7 +29,7 @@ const getSingleAttendee = async (req, res) => {
 
 const updateAttendee = async (req, res) => {
   const { id: attendeeId } = req.params;
-  const { firstname, lastname } = req.body;
+  const { firstname, lastname, status } = req.body;
   const attendee = await Attendee.findOne({ _id: attendeeId });
 
   if (!attendee) {
@@ -40,6 +40,7 @@ const updateAttendee = async (req, res) => {
   
   attendee.firstname = firstname;
   attendee.lastname = lastname;
+  attendee.status = status;
   await attendee.save();
   res
     .status(StatusCodes.OK)

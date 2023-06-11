@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
+  gender: {
+    type: String,
+    required: [true, "Merci de préciser un genre"]
+  },
   email: {
     type: String,
     unique: true,

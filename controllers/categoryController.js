@@ -1,13 +1,20 @@
 const Category = require("../models/Category");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const Attendee = require("../models/Attendee");
 
 const createCategory = async (req, res) => {
-    req.body.atMyExpense = req.body.priceTotal/(req.body.attendees.length+1)
-    const category = await Category.create(req.body);
-    res
-      .status(StatusCodes.CREATED)
-      .send({ msg: "Votre catégorie a bien été crée.", category: category });
+  
+  const attendees = await Attendee.find({user: req.body.user, status: true});
+  console.log(attendees.length); 
+  const nbTotalAttendees = attendees.length
+  req.body.atMyExpense = req.body.priceTotal/nbTotalAttendees
+  req.body.attendees = attendees
+  const category = await Category.create(req.body)
+  const payor = await Attendee.find({_id: category.payor});
+  res
+    .status(StatusCodes.CREATED)
+    .send({ msg: "Votre catégorie a bien été crée.", category: category, attendees: attendees, payor: payor, count: nbTotalAttendees });
   };
   
   const getAllCategory = async (req, res) => {
