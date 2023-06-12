@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Attendee = require("./Attendee");
 
 const CategorySchema = mongoose.Schema({
   name: {
@@ -26,10 +27,11 @@ const CategorySchema = mongoose.Schema({
     required: [true, "Merci de renseigner la devise de la catégorie"],
     enum: ["$", "€", "¥", "£"],
   },
-  payor: {
-    type: String
+  attendee: {
+    type: mongoose.Types.ObjectId,
+    ref: "Attendee",
+    required: true,
   },
-  attendees: [],
   user: {
     type: mongoose.Types.ObjectId,  
     ref: "User",

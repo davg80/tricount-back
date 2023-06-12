@@ -21,6 +21,9 @@ const AttendeeSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
+  },
+  count: {
+    type: Number
   }
 });
 

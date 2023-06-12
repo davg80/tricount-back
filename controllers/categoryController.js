@@ -4,28 +4,21 @@ const CustomError = require("../errors");
 const Attendee = require("../models/Attendee");
 
 const createCategory = async (req, res) => {
-  
-  const attendees = await Attendee.find({user: req.body.user, status: true});
-  console.log(attendees.length); 
-  const nbTotalAttendees = attendees.length
-  req.body.atMyExpense = req.body.priceTotal/nbTotalAttendees
-  req.body.attendees = attendees
   const category = await Category.create(req.body)
-  const payor = await Attendee.find({_id: category.payor});
   res
     .status(StatusCodes.CREATED)
-    .send({ msg: "Votre catégorie a bien été crée.", category: category, attendees: attendees, payor: payor, count: nbTotalAttendees });
+    .send({ msg: "Votre catégorie a bien été crée.", category: category });
   };
   
   const getAllCategory = async (req, res) => {
     const categories = await Category.find({}).populate(
-      "attendees"
+      "attendee"
     ).populate(
-      {path: "user", select: "firstname lastname"}
-    );
+      {path: "user", select: "_id firstname lastname"}
+    );  
     res
       .status(StatusCodes.OK)
-      .json({ categories: categories, count: categories.length });
+      .json({ categories: categories });
   };
   
   const getSingleCategory = async (req, res) => {
@@ -45,9 +38,11 @@ const createCategory = async (req, res) => {
   
   const updateCategory = async (req, res) => {
     const { id: categoryId } = req.params;
-    const { name, description, priceTotal, motto, attendees } = req.body;
+    const { name, description, priceTotal, motto, attendees, user } = req.body;
     const category = await Category.findOne({ _id: categoryId });
-  
+    const ArrayAttendees = await Attendee.find({user: req.body.user, status: true});
+    console.log(ArrayAttendees.length); 
+    const nbTotalAttendees = ArrayAttendees.length
     if (!category) {
       throw new CustomError.NotFoundError(
         `La catégorie n'existe pas.`
@@ -57,7 +52,9 @@ const createCategory = async (req, res) => {
     category.description = description;
     category.motto = motto;
     category.priceTotal = priceTotal;
+    category.atMyExpense = priceTotal/nbTotalAttendees
     category.attendees = attendees;
+    category.user = user;
     await category.save();
     res
       .status(StatusCodes.OK)

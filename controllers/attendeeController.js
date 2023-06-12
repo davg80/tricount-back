@@ -11,7 +11,8 @@ const createAttendee = async (req, res) => {
 
 const getAllAttendee = async (req, res) => {
   const attendees = await Attendee.find({});
-  res.status(StatusCodes.OK).json({ attendees: attendees, count: attendees.length });
+  attendees.count = await Attendee.find({}).count()
+  res.status(StatusCodes.OK).json({ attendees: attendees });
 };
 
 const getSingleAttendee = async (req, res) => {

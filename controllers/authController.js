@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Attendee = require("../models/Attendee");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 
@@ -13,18 +14,22 @@ const register = async (req, res) => {
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
 
-  const user = await User.create({
+  await User.create({
     lastname,
     firstname,
     gender,
     email,
     password,
     role,
-  });
-  res.status(StatusCodes.CREATED).json({
-    msg: `Vous êtes maintenant enregistré ${user.firstname} ${user.lastname} .`,
-    user: user,
-  });
+  }).then((response) => {
+    console.log(response);
+    const attendee = Attendee.create({firstname: response.firstname, lastname: response.lastname, user: response});
+    res.status(StatusCodes.CREATED).json({
+      msg: `Vous êtes maintenant enregistré ${response.firstname} ${response.lastname} et vous faites partie des participants.`,
+      user: response,
+    }); 
+  })
+ 
 };
 
 const login = async (req, res) => {
