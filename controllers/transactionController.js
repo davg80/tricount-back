@@ -66,6 +66,7 @@ const createTransaction = async (req, res) => {
       );
     }
     
+    transaction._id = transactionId;
     transaction.title = title;
     transaction.price = price;
     transaction.typeTransaction = typeTransaction;
@@ -74,7 +75,7 @@ const createTransaction = async (req, res) => {
     await transaction.save();
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Votre transaction a été modifié avec succés." });
+      .json({ msg: "Votre transaction a été modifié avec succés.", transaction: transaction});
   };
   
   const deleteTransaction = async (req, res) => {

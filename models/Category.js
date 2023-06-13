@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Attendee = require("./Attendee");
 
 const CategorySchema = mongoose.Schema({
   name: {
@@ -21,6 +20,7 @@ const CategorySchema = mongoose.Schema({
   },
   atMyExpense: {
     type: Number,
+    default: 0,
   },
   motto: {
     type: String,
