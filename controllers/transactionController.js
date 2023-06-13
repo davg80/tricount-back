@@ -59,7 +59,7 @@ const createTransaction = async (req, res) => {
     const { id: transactionId } = req.params;
     const { title, price, typeTransaction, attendee, category } = req.body;
     const transaction = await Transaction.findOne({ _id: transactionId });
-  
+
     if (!transaction) {
       throw new CustomError.NotFoundError(
         `La transaction n'existe pas.`
@@ -72,7 +72,7 @@ const createTransaction = async (req, res) => {
     transaction.typeTransaction = typeTransaction;
     transaction.attendee = attendee;
     transaction.category = category;
-    await transaction.save();
+    (await transaction.save());
     res
       .status(StatusCodes.OK)
       .json({ msg: "Votre transaction a été modifié avec succés.", transaction: transaction});

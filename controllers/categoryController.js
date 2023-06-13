@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const Transaction = require("../models/Transaction");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const Attendee = require("../models/Attendee");
@@ -34,12 +35,7 @@ const updateCategory = async (req, res) => {
   const { id: categoryId } = req.params;
   const { name, description, priceTotal, motto, attendees, user } = req.body;
   const category = await Category.findOne({ _id: categoryId });
-  const ArrayAttendees = await Attendee.find({
-    user: req.body.user,
-    status: true,
-  });
-  console.log(ArrayAttendees.length);
-  const nbTotalAttendees = ArrayAttendees.length;
+  const nbAttendees = await Attendee.countDocuments({status : true});
   if (!category) {
     throw new CustomError.NotFoundError(`La catégorie n'existe pas.`);
   }
@@ -47,8 +43,8 @@ const updateCategory = async (req, res) => {
   category.name = name;
   category.description = description;
   category.motto = motto;
-  category.priceTotal = priceTotal;
-  category.atMyExpense = priceTotal / nbTotalAttendees;
+  category.priceTotal = parseInt(priceTotal);
+  category.atMyExpense = parseInt(priceTotal) / parseInt(nbAttendees);
   category.attendees = attendees;
   category.user = user;
   await category.save();
@@ -60,6 +56,13 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   const { id: categoryId } = req.params;
   const category = await Category.findOne({ _id: categoryId });
+
+  const transactions = await Transaction.find({ category: categoryId });
+  console.log(transactions);
+  if(transactions.length > 0) {
+    console.log("coucou");
+    throw new CustomError.UnauthorizedError(`La catégorie ne peut pas être supprimé car elle contient des transactions.`);
+  }
 
   if (!category) {
     throw new CustomError.NotFoundError(`La catégorie n'existe pas.`);

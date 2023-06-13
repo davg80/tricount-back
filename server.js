@@ -17,7 +17,7 @@ const userRouter = require("./routes/userRoutes.js");
 const categoryRouter = require("./routes/categoryRoutes.js");
 const attendeeRouter = require("./routes/attendeeRoutes.js");
 const transactionRouter = require("./routes/transactionRoutes.js");
-const balanceSheetRouter = require("./routes/balanceSheetRoutes.js");
+
 
 // Middleware
 const notFoundMiddleware = require("./middleware/not-found");
@@ -34,7 +34,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/attendees", attendeeRouter);
 app.use("/api/v1/transactions", transactionRouter);
-app.use("/api/v1/balance-sheet", balanceSheetRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
