@@ -45,7 +45,7 @@ const updateAttendee = async (req, res) => {
   await attendee.save();
   res
     .status(StatusCodes.OK)
-    .json({ msg: "Votre participant a été modifié avec succes." });
+    .json({ msg: "Votre participant a été modifié avec succès." });
 };
 
 const deleteAttendee = async (req, res) => {
@@ -61,7 +61,7 @@ const deleteAttendee = async (req, res) => {
   await Attendee.deleteOne({ _id: attendeeId });
   res
     .status(StatusCodes.OK)
-    .json({ msg: "Votre participant a été supprimé avec succes." });
+    .json({ msg: "Votre participant a été supprimé avec succès." });
 };
 
 module.exports = {

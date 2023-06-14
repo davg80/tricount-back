@@ -24,7 +24,8 @@ const createCategory = async (req, res) => {
 const getAllCategory = async (req, res) => {
   const categories = await Category.find({})
     .populate("attendee")
-    .populate({ path: "user", select: "_id firstname lastname" });
+    .populate("transactions")
+    .populate({ path: "user", select: "_id firstname lastname" })
   res.status(StatusCodes.OK).json({ categories: categories });
 };
 
@@ -32,6 +33,7 @@ const getSingleCategory = async (req, res) => {
   const { id: categoryId } = req.params;
   const category = await Category.findOne({ _id: categoryId })
     .populate("attendee")
+    .populate("transactions")
     .populate({ path: "user", select: "_id firstname lastname" });
 
   if (!category) {
@@ -43,7 +45,7 @@ const getSingleCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   const { id: categoryId } = req.params;
-  const { name, description, priceTotal, motto, attendees, user } = req.body;
+  const { name, description, priceTotal, motto,transactions, attendees, user } = req.body;
   const category = await Category.findOne({ _id: categoryId });
   const nbAttendees = await Attendee.countDocuments({ status: true });
   if (!category) {
@@ -53,6 +55,7 @@ const updateCategory = async (req, res) => {
   category.name = name;
   category.description = description;
   category.motto = motto;
+  category.transactions = transactions
   category.priceTotal = parseInt(priceTotal);
   category.atMyExpense = (parseInt(priceTotal) / parseInt(nbAttendees)).toFixed(
     2
@@ -61,7 +64,7 @@ const updateCategory = async (req, res) => {
   category.user = user;
   await category.save();
   res.status(StatusCodes.OK).json({
-    msg: "Votre catégorie a été modifiée avec succes.",
+    msg: "Votre catégorie a été modifiée avec succès.",
     categories: category,
   });
 };
@@ -85,7 +88,7 @@ const deleteCategory = async (req, res) => {
   await Category.deleteOne({ _id: categoryId });
   res
     .status(StatusCodes.OK)
-    .json({ msg: "Votre catégorie a été supprimée avec succes." });
+    .json({ msg: "Votre catégorie a été supprimée avec succès." });
 };
 
 module.exports = {

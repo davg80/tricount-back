@@ -46,7 +46,7 @@ const deleteUser = async (req, res) => {
   await user.deleteOne({ _id: userId });
   res
     .status(StatusCodes.OK)
-    .json({ msg: "Votre participant a été supprimé avec succes." });
+    .json({ msg: "Votre participant a été supprimé avec succès." });
 };
 
 module.exports = {
