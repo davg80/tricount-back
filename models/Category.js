@@ -27,13 +27,14 @@ const CategorySchema = mongoose.Schema({
     required: [true, "Merci de renseigner la devise de la catégorie"],
     enum: ["$", "€", "¥", "£"],
   },
+  transactions: [{type: mongoose.Schema.Types.ObjectId, ref: "Transaction"}],
   attendee: {
     type: mongoose.Types.ObjectId,
     ref: "Attendee",
     required: true,
   },
   user: {
-    type: mongoose.Types.ObjectId,  
+    type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
   },
