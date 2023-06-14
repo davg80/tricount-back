@@ -94,6 +94,8 @@ const createTransaction = async (req, res) => {
 
     const attendeeBD = await Attendee.findOne({ _id: category.attendee });
     const userBD = await User.findOne({ _id: category.user }).select("-password");
+    transaction.attendee = attendeeBD
+    transaction.user = userBD
     res
       .status(StatusCodes.OK)
       .json({ msg: "Votre transaction a été modifié avec succés.", transaction: transaction});

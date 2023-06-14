@@ -11,7 +11,8 @@ const createCategory = async (req, res) => {
   const newCategory = { name: name, description: description, motto: motto, priceTotal: priceTotal, atMyExpense: (parseInt(priceTotal)/nbAttendees).toFixed(2), attendee: attendee, user: user };
 
   const category = await Category.create(newCategory)
-  console.log(category);
+  console.log(category._id);
+  
   const attendeeBD = await Attendee.findOne({ _id: category.attendee });
   const userBD = await User.findOne({ _id: category.user }).select("-password");
   category.attendee = attendeeBD
@@ -24,7 +25,6 @@ const createCategory = async (req, res) => {
 const getAllCategory = async (req, res) => {
   const categories = await Category.find({})
     .populate("attendee")
-    .populate("transactions")
     .populate({ path: "user", select: "_id firstname lastname" })
   res.status(StatusCodes.OK).json({ categories: categories });
 };
@@ -33,7 +33,6 @@ const getSingleCategory = async (req, res) => {
   const { id: categoryId } = req.params;
   const category = await Category.findOne({ _id: categoryId })
     .populate("attendee")
-    .populate("transactions")
     .populate({ path: "user", select: "_id firstname lastname" });
 
   if (!category) {
@@ -45,7 +44,7 @@ const getSingleCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   const { id: categoryId } = req.params;
-  const { name, description, priceTotal, motto,transactions, attendees, user } = req.body;
+  const { name, description, priceTotal, motto, attendees, user } = req.body;
   const category = await Category.findOne({ _id: categoryId });
   const nbAttendees = await Attendee.countDocuments({ status: true });
   if (!category) {
@@ -55,7 +54,6 @@ const updateCategory = async (req, res) => {
   category.name = name;
   category.description = description;
   category.motto = motto;
-  category.transactions = transactions
   category.priceTotal = parseInt(priceTotal);
   category.atMyExpense = (parseInt(priceTotal) / parseInt(nbAttendees)).toFixed(
     2
@@ -86,6 +84,7 @@ const deleteCategory = async (req, res) => {
   }
 
   await Category.deleteOne({ _id: categoryId });
+  await Transaction.deleteMany({ category: categoryId });
   res
     .status(StatusCodes.OK)
     .json({ msg: "Votre catégorie a été supprimée avec succès." });
