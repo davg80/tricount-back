@@ -51,7 +51,7 @@ const createTransaction = async (req, res) => {
     const transactions = await Transaction.find({})
       .populate("attendee")
     .populate({ path: "user", select: "_id firstname lastname" })
-      .populate({ path: "category", select: "_id name description motto" });
+      .populate({ path: "category", select: "_id name description motto priceTotal" });
     res
       .status(StatusCodes.OK)
       .json({ transactions: transactions, count: transactions.length });
@@ -62,7 +62,7 @@ const createTransaction = async (req, res) => {
     const transaction = await Transaction.findOne({ _id: transactionId })
      .populate("attendee")
     .populate({ path: "user", select: "_id firstname lastname" })
-      .populate({ path: "category", select: "name description motto" });
+      .populate({ path: "category", select: "name description motto priceTotal" });
   
     if (!transaction) {
       throw new CustomError.NotFoundError(

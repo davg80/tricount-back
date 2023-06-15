@@ -8,15 +8,23 @@ const User = require("../models/User");
 const createCategory = async (req, res) => {
   const { name, description, motto, priceTotal, attendee, user } = req.body;
   const nbAttendees = await Attendee.countDocuments({ status: true });
-  const newCategory = { name: name, description: description, motto: motto, priceTotal: priceTotal, atMyExpense: (parseInt(priceTotal)/nbAttendees).toFixed(2), attendee: attendee, user: user };
+  const newCategory = {
+    name: name,
+    description: description,
+    motto: motto,
+    priceTotal: priceTotal,
+    atMyExpense: (parseInt(priceTotal) / nbAttendees - 1).toFixed(2),
+    attendee: attendee,
+    user: user,
+  };
 
-  const category = await Category.create(newCategory)
+  const category = await Category.create(newCategory);
   console.log(category._id);
-  
+
   const attendeeBD = await Attendee.findOne({ _id: category.attendee });
   const userBD = await User.findOne({ _id: category.user }).select("-password");
-  category.attendee = attendeeBD
-  category.user = userBD
+  category.attendee = attendeeBD;
+  category.user = userBD;
   res
     .status(StatusCodes.CREATED)
     .send({ msg: "Votre catégorie a bien été crée.", category: category });
@@ -25,7 +33,7 @@ const createCategory = async (req, res) => {
 const getAllCategory = async (req, res) => {
   const categories = await Category.find({})
     .populate("attendee")
-    .populate({ path: "user", select: "_id firstname lastname" })
+    .populate({ path: "user", select: "_id firstname lastname" });
   res.status(StatusCodes.OK).json({ categories: categories });
 };
 
@@ -55,9 +63,9 @@ const updateCategory = async (req, res) => {
   category.description = description;
   category.motto = motto;
   category.priceTotal = parseInt(priceTotal);
-  category.atMyExpense = (parseInt(priceTotal) / parseInt(nbAttendees)).toFixed(
-    2
-  );
+  category.atMyExpense = (
+    parseInt(priceTotal) / parseInt(nbAttendees - 1)
+  ).toFixed(2);
   category.attendees = attendees;
   category.user = user;
   await category.save();
