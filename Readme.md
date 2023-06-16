@@ -1,3 +1,5 @@
+# tricount-api
+
 # Mise en place d'une API avec Express et Mongoose
 
 Ce projet utilise Express, un framework web pour Node.js, pour simplifier la création de serveurs web robustes et performants. Avec Express, les routes, les requêtes et les réponses HTTP sont gérées facilement, ce qui permet de développer rapidement des API RESTful. Sa simplicité et sa flexibilité en font un choix populaire pour le développement côté serveur dans les applications web.
